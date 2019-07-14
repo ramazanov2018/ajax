@@ -12,41 +12,116 @@
 		** Задание 1. Код вставлять сюда
 		**
 		*/
-		
+		function fillCategories(){
+			let req = new XMLHttpRequest();
+			req.onreadystatechange = function(){
+				if(req.readyState === 4){
+					let select = document.getElementById("selCategory");
+					let text = req.responseText;
+					let cats = text.split("\n");
+					for (let i = 0; i<cats.length; i++){
+						if (cats[i] === "")continue;
+						let cat = cats[i].split(":");
+						let opt = document.createElement("option");
+						opt.setAttribute('value', cat[0] );
+						let optText = document.createTextNode(cat[1]);
+						opt.appendChild(optText);
+						select.appendChild(opt);
+
+					}
+					console.log(req.responseText);
+				}
+			};
+			req.open("POST", "getcategories.php", true);
+			req.send(null);
+
+		}
+
+
+		// При завершении загрузки страницы
+		window.onload = function(){
+			fillCategories();
+		};
+
 		/*
 		**
-		**	Задание 2. Выборка книг 
+		**	Задание 2. Выборка книг
 		**
 		*/
-		function showBooks(){
-			alert("Покажем книгу...");  // Удалите эту строчку! 
+
+		function Book(autor, title, image) {
+			this.autor = autor;
+			this.title = title;
+			this.image = image;
 		}
-		
-		
+
+		function showBooks() {
+			let books = [];
+			let select = document.getElementById("selCategory");
+			if (select.selectedIndex < 0){
+				alert("Не выбрали категорию");
+				return
+			}
+			let catId = select.options[select.selectedIndex].value;
+			let searchString = "cat=" + catId;
+			let req = new XMLHttpRequest();
+
+			req.onreadystatechange = function(){
+
+				if(req.readyState !== 4) return;
+
+				let responseText = String(req.responseText);
+				let bookStrings = responseText.split("\n");
+
+				for(let i=0; i<bookStrings.length; i++){
+					if (bookStrings[i] === ""){
+						continue;
+					}
+					let part = bookStrings[i].split("|");
+					books[books.length] = new Book(part[0],part[1],part[2]);
+				}
+
+				let table = document.getElementById("tableBooks");
+				while (table.hasChildNodes()){
+					table.removeChild(table.firstChild);
+				}
+				for(let k=0; k<books.length; k++){
+					let tr = document.createElement("tr");
+					tr.innerHTML = "<td>"+books[k].autor+"</td><td>"+books[k].title+"</td>";
+					tr.onclick = function(){
+						tr.style.color = "blue";
+					};
+					table.appendChild(tr);
+				}
+			};
+			req.open("POST", "postbooksbycat.php", true);
+			req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			req.send(searchString);
+		}
 		/*
 		**
 		**	Задание 3. Показ изображений
 		**
 		*/
-		
+
 
 	</script>
 </head>
 <body>
-	<h1>Книги по категориям</h1>
-	<form action="#" onsubmit="return false">
-		<div>
-			<label for="selCategory">Категория</label>
-			<select id="selCategory"></select>
-			<button onclick="">Показать</button>
-		</div>
-		
-		<div id="divBookInfo">
-			<img src="" alt="" />
-		</div>			
-	</form>
-	
-	<table id="tableBooks"></table>
+<h1>Книги по категориям</h1>
+<form action="#" onsubmit="return false">
+	<div>
+		<label for="selCategory">Категория</label>
+		<select id="selCategory"></select>
+		<button onclick=showBooks()>Показать</button>
+	</div>
+
+	<div id="divBookInfo">
+		<img src="" alt="" />
+	</div>
+</form>
+
+<table id="tableBooks"></table>
 	
 
 	
