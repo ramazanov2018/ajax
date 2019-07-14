@@ -15,14 +15,34 @@
 		**	Задание 2. Выборка книги 
 		**
 		*/
+		function getBookByNumber(num) {
+			console.log(num);
+			let url ="getbooktxt.php?num="+ num;
+			let request = new XMLHttpRequest();
+			request.onreadystatechange = function(){
+				if (request.readyState == 4) {
+					let divResult = document.getElementById("divResult");
+					//console.log(request.responseText);
+					divResult.firstChild.nodeValue = request.responseText;
+				}
+			};
+			request.open("GET", url, true );
+			request.send(null);
+		}
 
 
-		
 		/*
 		**
 		**	Задание 3. Обработчик кнопки
 		**
-		*/ 
+		*/
+
+		function showBook(){
+			let num = document.getElementById("txtNum").value;
+			if (num !== null ){
+				getBookByNumber(num);
+			}
+		}
 
 	</script>
 </head>
