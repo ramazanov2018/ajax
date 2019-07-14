@@ -42,7 +42,7 @@
 		*/
 
 		// Билет пользователя
-		var ticket;
+		let ticket;
 
 		// Функция проверки пользователя
 		function validateUser(){
@@ -59,7 +59,7 @@
 
 			let UserInfoJson  = JSON.stringify(User);
 
-			let req = getXmlHttpRequest();
+			let req = new XMLHttpRequest();
 			req.onreadystatechange = function(){
 				if (req.readyState === 4){
 					ticket = JSON.parse(req.responseText);
@@ -104,7 +104,7 @@
 		function showOnLineUsers() {
 			let ticketJson = JSON.stringify(ticket);
 			let usersOnline;
-			let req = getXmlHttpRequest();
+			let req = new XMLHttpRequest();
 			req.onreadystatechange = function(){
 				let div = document.getElementById("divUsers");
 				let ul_list = div.getElementsByTagName('ul');
@@ -131,7 +131,7 @@
 			//req.setRequestHeader("Content-Length", jsonData.length);
 			req.send(ticketJson);
 			//console.log(ul);
-			setTimeout("showOnLineUsers()", 20000)
+			setTimeout("showOnLineUsers()", 10000)
 		}
 		window.onload = function(){
 			showOnLineUsers();
@@ -166,10 +166,6 @@
 		<h2>Пользователи на сайте</h2>
 		<button onclick="showLoginForm()">Вход</button>
 		<ul>
-			<li>dff</li>
-			<li>dff</li>
-			<li>dff</li>
-			<li>dff</li>
 		</ul>
 	</div>
 	
