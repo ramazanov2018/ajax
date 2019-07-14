@@ -12,11 +12,35 @@
 		**	Задание 1. Список категорий
 		**
 		*/
-	
-		
+		function fillCategories(){
+			req = new XMLHttpRequest();
+			req.onreadystatechange = function(){
+				if(req.readyState == 4){
+					let select = document.getElementById("selCategory");
+					let text = req.responseText;
+					let cats = text.split("\n");
+					for (let i = 0; i<cats.length; i++){
+						if (cats[i] == "")continue;
+						let cat = cats[i].split(":");
+						let opt = document.createElement("option");
+						opt.setAttribute('value', cat[0] );
+						let optText = document.createTextNode(cat[1]);
+						opt.appendChild(optText);
+						select.appendChild(opt);
+
+					}
+					console.log(req.responseText);
+				}
+			};
+			req.open("POST", "getcategories.php", true);
+			req.send(null);
+
+		}
+
+
 		// При завершении загрузки страницы
 		window.onload = function(){
-		
+			fillCategories();
 		}
 		
 	</script>
